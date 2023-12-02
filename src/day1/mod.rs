@@ -1,7 +1,7 @@
 use crate::aoc_util::read_lines::read_lines_vec;
 
 pub fn run() {
-    let file_path = "./inputs/day1.txt";
+    let file_path = "./inputs/day1/input";
 
     match read_lines_vec(file_path) {
         Ok(lines) => {

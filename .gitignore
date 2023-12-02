@@ -3,5 +3,6 @@ target/
 Cargo.lock
 **/*.rs.bk
 
-inputs/
+inputs/**/input
+inputs/**/puzzle.md
 

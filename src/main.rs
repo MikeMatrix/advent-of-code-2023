@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 
 mod day1;
+mod day2;
 mod aoc_util {
     pub mod read_lines;
 }
@@ -16,6 +17,7 @@ struct Cli {
 #[derive(Debug, Subcommand)]
 enum Commands {
     Day1,
+    Day2,
 }
 
 fn main() {
@@ -24,6 +26,9 @@ fn main() {
     match args.command {
         Commands::Day1 => {
             day1::run();
+        }
+        Commands::Day2 => {
+            day2::run();
         }
     }
 }
