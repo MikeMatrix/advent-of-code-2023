@@ -3,6 +3,7 @@ use clap::{Parser, Subcommand};
 mod day1;
 mod day2;
 mod day3;
+mod day4;
 mod aoc_util {
     pub mod read_lines;
 }
@@ -20,6 +21,7 @@ enum Commands {
     Day1,
     Day2,
     Day3,
+    Day4,
 }
 
 fn main() {
@@ -34,6 +36,9 @@ fn main() {
         }
         Commands::Day3 => {
             day3::run();
+        }
+        Commands::Day4 => {
+            day4::run();
         }
     }
 }
