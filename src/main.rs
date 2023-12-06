@@ -4,6 +4,7 @@ mod day1;
 mod day2;
 mod day3;
 mod day4;
+mod day5;
 mod aoc_util {
     pub mod read_lines;
 }
@@ -22,6 +23,7 @@ enum Commands {
     Day2,
     Day3,
     Day4,
+    Day5,
 }
 
 fn main() {
@@ -39,6 +41,9 @@ fn main() {
         }
         Commands::Day4 => {
             day4::run();
+        }
+        Commands::Day5 => {
+            day5::run();
         }
     }
 }
