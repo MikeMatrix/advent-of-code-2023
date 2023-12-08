@@ -14,7 +14,7 @@ pub fn run() {
     }
 }
 
-fn part_1(lines: &Vec<String>) -> () {
+fn parse_inputs(lines: &Vec<String>) -> (Vec<usize>, Vec<String>, Vec<[usize; 2]>) {
     let directions: Vec<usize> = lines[0]
         .chars()
         .map(|v| match v {
@@ -60,6 +60,14 @@ fn part_1(lines: &Vec<String>) -> () {
         paths[assignee_pos][0] = left_pos;
         paths[assignee_pos][1] = right_pos;
     }
+
+    return (directions, positions, paths);
+}
+
+fn get_steps(positions: &Vec<String>, paths: &Vec<[usize; 2]>, end_positions: &Vec<usize>) -> u32 {}
+
+fn part_1(lines: &Vec<String>) -> () {
+    let (directions, positions, paths) = parse_inputs(lines);
 
     let mut steps = 0;
     let mut current_pos = positions.iter().position(|v| v == "AAA").unwrap();
