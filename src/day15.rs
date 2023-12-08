@@ -14,6 +14,6 @@ pub fn run() {
     }
 }
 
-fn part_1(lines: &Vec<String>) -> () {}
+fn part_1(_lines: &Vec<String>) -> () {}
 
-fn part_2(lines: &Vec<String>) -> () {}
+fn part_2(_lines: &Vec<String>) -> () {}

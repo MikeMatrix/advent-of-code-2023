@@ -65,21 +65,14 @@ fn part_2(lines: &Vec<String>) -> () {
 
 #[derive(Debug, Clone)]
 struct Line {
-    card: u32,
     winners: Vec<u32>,
     picks: Vec<u32>,
 }
 
-const CARD_NUMBER: [usize; 2] = [5, 8];
 const WINNERS: [usize; 2] = [10, 39];
 const PICKS: [usize; 2] = [42, 116];
 
 fn parse_line(line: &String) -> Line {
-    let card = line[CARD_NUMBER[0]..CARD_NUMBER[1]]
-        .trim()
-        .parse::<u32>()
-        .unwrap_or(0);
-
     let winners: Vec<_> = line[WINNERS[0]..WINNERS[1]]
         .split_whitespace()
         .map(|v| v.parse::<u32>().unwrap_or(0))
@@ -89,9 +82,5 @@ fn parse_line(line: &String) -> Line {
         .map(|v| v.parse::<u32>().unwrap_or(0))
         .collect();
 
-    return Line {
-        card,
-        winners,
-        picks,
-    };
+    return Line { winners, picks };
 }
