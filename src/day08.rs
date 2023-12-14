@@ -64,8 +64,6 @@ fn parse_inputs(lines: &Vec<String>) -> (Vec<usize>, Vec<String>, Vec<[usize; 2]
     return (directions, positions, paths);
 }
 
-fn get_steps(positions: &Vec<String>, paths: &Vec<[usize; 2]>, end_positions: &Vec<usize>) -> u32 {}
-
 fn part_1(lines: &Vec<String>) -> () {
     let (directions, positions, paths) = parse_inputs(lines);
 
@@ -83,6 +81,26 @@ fn part_1(lines: &Vec<String>) -> () {
     }
 
     println!("Part 1: {}", steps);
+}
+
+fn get_cycle_for_position(
+    position: usize,
+    paths: &Vec<[usize; 2]>,
+    directions: &Vec<usize>,
+    end_positions: &Vec<usize>,
+) -> u64 {
+    let mut steps: u64 = 0;
+    let mut current = position;
+    for direction in directions.iter().cycle() {
+        if end_positions.iter().any(|v| *v == current) {
+            break;
+        }
+
+        current = paths[current][*direction];
+        steps += 1;
+    }
+
+    return steps;
 }
 
 fn part_2(lines: &Vec<String>) -> () {
@@ -139,28 +157,23 @@ fn part_2(lines: &Vec<String>) -> () {
         .map(|(pos, _)| pos)
         .collect();
 
-    let mut steps = 0;
-    let mut current_positions: Vec<usize> = positions
+    let mut start_positions = positions
         .iter()
         .enumerate()
         .filter(|(_, v)| v.ends_with("A"))
-        .map(|(pos, _)| pos)
-        .collect();
+        .map(|(pos, _)| pos);
 
-    for direction in directions.iter().cycle() {
-        if current_positions
-            .iter()
-            .all(|pos| end_positions.iter().any(|end_pos| *pos == *end_pos))
-        {
-            break;
-        }
+    let mut lcm: u64 = get_cycle_for_position(
+        start_positions.next().unwrap(),
+        &paths,
+        &directions,
+        &end_positions,
+    );
 
-        for i in 0..current_positions.len() {
-            current_positions[i] = paths[current_positions[i]][*direction];
-        }
-
-        steps += 1;
+    for pos in start_positions {
+        let cycle = get_cycle_for_position(pos, &paths, &directions, &end_positions);
+        lcm = num::integer::lcm(lcm, cycle);
     }
 
-    println!("Part 2: {}", steps);
+    println!("Part 2: {:?}", lcm);
 }
