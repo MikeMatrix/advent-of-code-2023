@@ -124,7 +124,7 @@ fn walk_connection(
     }
 }
 
-fn walk_complete(map: &Vec<Vec<char>>, start: Position, next: Position) {
+fn walk_complete(map: &Vec<Vec<char>>, start: Position, next: Position) -> Vec<Position> {
     let mut prev_position = start;
     let mut curr_position = next;
 
@@ -139,12 +139,7 @@ fn walk_complete(map: &Vec<Vec<char>>, start: Position, next: Position) {
         curr_position = next_position;
     }
 
-    println!(
-        "{:?}, Steps: {}, Furthest: {}",
-        path,
-        path.len(),
-        path.len() / 2
-    );
+    return path;
 }
 
 fn part_1(lines: &Vec<String>) -> () {
@@ -156,7 +151,102 @@ fn part_1(lines: &Vec<String>) -> () {
 
     let left_position = initial_connection_positions[0];
 
-    walk_complete(&map, start_position, left_position);
+    let path = walk_complete(&map, start_position, left_position);
+
+    println!("Part 1: {}", path.len() / 2);
 }
 
-fn part_2(_lines: &Vec<String>) -> () {}
+fn vertical_offset(prev: &Position, next: &Position) -> isize {
+    if prev.y < next.y {
+        return 1;
+    }
+
+    if prev.y > next.y {
+        return -1;
+    }
+
+    return 0;
+}
+
+fn is_inside_path(path_dir_lookup: &Vec<Vec<(bool, isize)>>, pos: Position) -> (bool, bool) {
+    if path_dir_lookup[pos.y][pos.x].0 {
+        return (false, true);
+    }
+
+    let winding = (0..pos.x).fold(0, |acc, curr| acc + path_dir_lookup[pos.y][curr].1);
+    return (winding == 0, false);
+}
+
+fn part_2(lines: &Vec<String>) -> () {
+    let map = get_map(lines);
+
+    let start_position = get_start_pos(&map).unwrap();
+
+    let initial_connection_positions = get_connection_points(&map, start_position);
+
+    let left_position = initial_connection_positions[0];
+
+    let path = walk_complete(&map, start_position, left_position);
+    let mut path_directions: Vec<isize> = vec![];
+
+    let path_windows = path.windows(3).enumerate();
+    let path_window_count = path_windows.len();
+    let first_path = path.first().unwrap();
+    let last_path = path.last().unwrap();
+
+    for (idx, window) in path_windows {
+        if idx == 0 {
+            // also handle first
+            let offset = vertical_offset(last_path, &window[1]);
+            path_directions.push(offset);
+        }
+
+        let offset = vertical_offset(&window[0], &window[2]);
+        path_directions.push(offset);
+
+        if idx == path_window_count - 1 {
+            let offset = vertical_offset(&window[2], first_path);
+            path_directions.push(offset);
+        }
+    }
+
+    let mut path_dir_lookup: Vec<Vec<(bool, isize)>> = map
+        .iter()
+        .map(|line| vec![(false, 0); line.len()])
+        .collect();
+
+    for (pos, dir) in path.iter().zip(path_directions.iter()) {
+        path_dir_lookup[pos.y][pos.x] = (true, *dir);
+    }
+
+    let mut count = 0;
+    let mut debug_map = map.clone();
+    for (y, line) in map.iter().enumerate() {
+        for x in 0..line.len() {
+            let check = is_inside_path(&path_dir_lookup, Position { x, y });
+
+            if !check.1 {
+                if check.0 {
+                    debug_map[y][x] = 'I';
+                    count += 1;
+                } else {
+                    debug_map[y][x] = 'O';
+                }
+            }
+        }
+        // println!("{}", debug_map[y].iter().collect::<String>());
+        println!(
+            "{}",
+            path_dir_lookup[y]
+                .iter()
+                .map(|(_, dir)| match dir {
+                    1 => '+',
+                    -1 => '-',
+                    _ => '.',
+                })
+                .collect::<String>()
+        );
+    }
+
+    println!("Part 2: {}", count);
+}
